@@ -17,15 +17,20 @@ from app.models.platform import AdminUser, FeatureFlag, RemoteConfig
 from app.models.subscription import CreditPackage, SubscriptionPlan
 
 # Persona-based catalogue (spec rule 2) — the app shows personas, not raw model names.
+# `or_model` is the OpenRouter model id used when OPENROUTER_API_KEY is configured;
+# otherwise the persona falls back to the echo mock. All editable from the admin panel.
 MODELS = [
     dict(code="fast", name="سریع", capability="text", tier="free", order=1,
          desc="مناسب سؤال روزمره، ترجمه و خلاصه‌سازی", premium=False,
+         or_model="openai/gpt-4o-mini",
          u_in=Decimal("0.25"), u_out=Decimal("0.50"), c_in=Decimal("0.10"), c_out=Decimal("0.20")),
     dict(code="smart", name="هوشمند", capability="text", tier="plus", order=2,
          desc="مناسب تحلیل، برنامه‌نویسی و نوشتن حرفه‌ای", premium=True,
+         or_model="openai/gpt-4o",
          u_in=Decimal("1.30"), u_out=Decimal("2.60"), c_in=Decimal("0.50"), c_out=Decimal("1.00")),
     dict(code="researcher", name="پژوهشگر", capability="text", tier="pro", order=3,
          desc="مناسب تحقیق عمیق و گزارش حرفه‌ای", premium=True,
+         or_model="openai/gpt-4o",
          u_in=Decimal("3.00"), u_out=Decimal("6.00"), c_in=Decimal("1.20"), c_out=Decimal("2.40")),
     dict(code="designer", name="طراح", capability="image", tier="plus", order=4,
          desc="تولید و ویرایش تصویر", premium=True,
@@ -33,25 +38,37 @@ MODELS = [
 ]
 
 
-async def _seed_providers(db):
-    row = (await db.execute(select(AIProviderRow).where(AIProviderRow.key == "echo"))).scalar_one_or_none()
+async def _seed_provider(db, key: str, name: str, enabled: bool = True):
+    row = (
+        await db.execute(select(AIProviderRow).where(AIProviderRow.key == key))
+    ).scalar_one_or_none()
     if row is None:
-        row = AIProviderRow(key="echo", name="Echo (Mock Provider)", is_enabled=True, priority=100)
+        row = AIProviderRow(key=key, name=name, is_enabled=enabled, priority=100)
         db.add(row)
         await db.flush()
     return row
 
 
-async def _seed_models(db, provider):
+async def _seed_models(db, echo, openrouter):
+    from app.core.config import settings
+
+    use_or = bool(settings.openrouter_api_key)
     for m in MODELS:
         existing = (
             await db.execute(select(AIModel).where(AIModel.code == m["code"]))
         ).scalar_one_or_none()
         if existing:
             continue
+        # Text personas use OpenRouter when configured; image stays on echo for now.
+        if use_or and m["capability"] == "text":
+            provider = openrouter
+            provider_model = m["or_model"]
+        else:
+            provider = echo
+            provider_model = "echo-" + m["code"]
         model = AIModel(
             provider_id=provider.id,
-            provider_model="echo-" + m["code"],
+            provider_model=provider_model,
             code=m["code"],
             display_name=m["name"],
             description=m["desc"],
@@ -162,8 +179,9 @@ async def _seed_admin(db):
 
 async def seed() -> None:
     async with SessionLocal() as db:
-        provider = await _seed_providers(db)
-        await _seed_models(db, provider)
+        echo = await _seed_provider(db, "echo", "Echo (Mock Provider)")
+        openrouter = await _seed_provider(db, "openrouter", "OpenRouter")
+        await _seed_models(db, echo, openrouter)
         await _seed_plans(db)
         await _seed_credit_packs(db)
         await _seed_config(db)

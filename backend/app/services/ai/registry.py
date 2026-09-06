@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from app.services.ai.base import AIProvider
 from app.services.ai.providers.echo import EchoProvider
+from app.services.ai.providers.openrouter import build_from_settings as build_openrouter
 
 _REGISTRY: dict[str, AIProvider] = {}
 
@@ -26,9 +27,10 @@ def all_providers() -> dict[str, AIProvider]:
 def bootstrap_providers() -> None:
     """Register built-in providers. Called once at app startup."""
     register(EchoProvider())
-    # Real providers (registered when their API keys are configured):
-    #   from app.services.ai.providers.openai import OpenAIProvider
-    #   if settings.openai_api_key: register(OpenAIProvider(...))
+    # Real providers are registered only when their API key is configured.
+    openrouter = build_openrouter()
+    if openrouter:
+        register(openrouter)
 
 
 # Register defaults at import time so tests and workers have them too.

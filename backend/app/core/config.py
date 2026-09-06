@@ -54,6 +54,13 @@ class Settings(BaseSettings):
     openai_base_url: str = Field(default="https://api.openai.com/v1", alias="OPENAI_BASE_URL")
     anthropic_api_key: str = Field(default="", alias="ANTHROPIC_API_KEY")
     google_api_key: str = Field(default="", alias="GOOGLE_API_KEY")
+    # OpenRouter (OpenAI-compatible multi-model gateway). Server-side only.
+    openrouter_api_key: str = Field(default="", alias="OPENROUTER_API_KEY")
+    openrouter_base_url: str = Field(
+        default="https://openrouter.ai/api/v1", alias="OPENROUTER_BASE_URL"
+    )
+    openrouter_site_url: str = Field(default="https://deepgap.app", alias="OPENROUTER_SITE_URL")
+    openrouter_app_name: str = Field(default="DeepGap", alias="OPENROUTER_APP_NAME")
 
     # ---- Payments ----
     payment_provider: str = Field(default="mock", alias="PAYMENT_PROVIDER")

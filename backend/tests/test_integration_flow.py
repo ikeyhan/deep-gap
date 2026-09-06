@@ -23,11 +23,11 @@ pytestmark = pytest.mark.skipif(
 
 @pytest.mark.asyncio
 async def test_full_flow():
+    import random
+
     import httpx
 
     from app.main import app
-
-    import random
 
     P = "/api/v1"
     transport = httpx.ASGITransport(app=app)
@@ -45,7 +45,8 @@ async def test_full_flow():
             assert bal >= 100
 
             # Chat charges credit.
-            conv = (await c.post(f"{P}/conversations", headers=h, json={"model_code": "fast"})).json()["id"]
+            conv_resp = await c.post(f"{P}/conversations", headers=h, json={"model_code": "fast"})
+            conv = conv_resp.json()["id"]
             msg = (
                 await c.post(
                     f"{P}/conversations/{conv}/messages",
