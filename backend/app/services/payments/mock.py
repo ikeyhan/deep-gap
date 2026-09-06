@@ -39,8 +39,11 @@ class MockPaymentProvider(PaymentProvider):
     ) -> CreatePaymentResult:
         authority = "MOCK-" + uuid.uuid4().hex[:20]
         signature = _sign(authority, amount)
+        # The callback_url may already carry a query (e.g. ?payment_id=...),
+        # so choose the correct separator instead of always appending "?".
+        sep = "&" if "?" in callback_url else "?"
         url = (
-            f"{callback_url}?provider_ref={authority}"
+            f"{callback_url}{sep}provider_ref={authority}"
             f"&status=OK&signature={signature}"
         )
         return CreatePaymentResult(

@@ -48,9 +48,17 @@ uvicorn app.main:app --reload
 ## تست و لینت
 ```bash
 cd backend
-pytest -q          # 13 تست (billing math, JWT/auth, AI gateway)
+pytest -q          # ۲۲ تست واحد (billing, JWT/auth, gateway, payments, admin RBAC)
 ruff check app     # لینت
+
+# تست یکپارچهٔ end-to-end روی دیتابیس واقعی (نیازمند Postgres + Redis):
+export DATABASE_URL=... REDIS_URL=... RUN_INTEGRATION=1
+alembic upgrade head && python -m app.seed
+pytest tests/test_integration_flow.py   # OTP→چت→پرداخت→اشتراک→ادمین
 ```
+> جریان کامل (احراز هویت، صورت‌حساب، پرداخت با تأیید سرور و ضدِ double-credit،
+> ارتقای اشتراک و گیت tier، و داشبورد ادمین) روی Postgres واقعی تست شده است.
+> ادمین پیش‌فرض seed: `admin@deepgap.local` / `change-me-admin` (حتماً در production تغییر دهید).
 
 ## جریان یک درخواست چت (خلاصه)
 1. `POST /auth/otp/request` → دریافت کد (در dev کد در پاسخ `dev_code` است).

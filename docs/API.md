@@ -79,6 +79,24 @@ Authenticated endpoints require `Authorization: Bearer <access_token>`.
 is granted through the wallet ledger with a payment-scoped idempotency key (no
 double-grant on repeated callbacks). A client-reported success is never trusted.
 
+## Admin (separate auth + RBAC + audit)
+Admin tokens carry `scope=admin` and a `role`; they are NOT interchangeable with
+user tokens. Roles: `super_admin` (all), `finance`, `support`, `content`, `analyst`.
+| Method | Path | Role | Notes |
+|---|---|---|---|
+| POST | `/admin/auth/login` | — | `{email, password}` → admin token |
+| GET | `/admin/dashboard` | finance/analyst | KPIs (users, revenue, AI cost, gross profit, conversion) |
+| GET | `/admin/finance/top-models` | finance/analyst | Most-used / most-profitable models |
+| GET | `/admin/models` | any admin | List models |
+| POST | `/admin/models` | content | Create model + pricing |
+| PATCH | `/admin/models/{id}` | content | Update model and/or pricing |
+| POST | `/admin/models/{id}/toggle?enabled=` | content | Enable/disable without an app release |
+| GET | `/admin/users?q=` | support | Search users |
+| POST | `/admin/users/{id}/block?blocked=` | support | Block/unblock |
+| POST | `/admin/users/{id}/adjust-credit` | finance | `{amount, reason}` — ledgered + audited |
+
+Every model change, block and credit adjustment writes an `audit_logs` row.
+
 ## Health
 | Method | Path | Notes |
 |---|---|---|

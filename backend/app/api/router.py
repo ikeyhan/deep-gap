@@ -4,6 +4,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from app.api.v1 import (
+    admin,
     auth,
     chat,
     health,
@@ -23,3 +24,4 @@ api_router.include_router(chat.router)
 api_router.include_router(wallet.router)
 api_router.include_router(subscriptions.router)
 api_router.include_router(payments.router)
+api_router.include_router(admin.router)

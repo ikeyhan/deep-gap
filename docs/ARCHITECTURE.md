@@ -190,7 +190,7 @@ dev: Docker Compose (postgres/redis/minio/backend/nginx). prod: Ubuntu + Docker 
 Server setup → Firewall → Docker → env/secrets → `alembic upgrade head` → seed → Nginx + Domain + SSL → Backup + Monitoring → Deploy → Rollback (نگهداری نسخهٔ قبلی image + migration downgrade محتاطانه). سه محیط: development / staging / production.
 
 ## ۳۳. مراحل ساخت MVP
-Phase 1 (Backend Foundation ✅) → 2 Auth ✅ → 3 Flutter Foundation → 4 AI Gateway ✅ → 5 Chat+Streaming ✅ → 6 Wallet/Billing ✅ → 7 Subscription/Payment ✅ → 8 Image/Vision → 9 Voice(STT) → 10 Admin → 11 Analytics/Config → 12 Security/Abuse → 13 Test/Perf → 14 Deploy → 15 Android Release → 16 Monitoring.
+Phase 1 (Backend Foundation ✅) → 2 Auth ✅ → 3 Flutter Foundation → 4 AI Gateway ✅ → 5 Chat+Streaming ✅ → 6 Wallet/Billing ✅ → 7 Subscription/Payment ✅ → 8 Image/Vision → 9 Voice(STT) → 10 Admin API ✅ → 11 Analytics/Config → 12 Security/Abuse → 13 Test/Perf (unit + live integration ✅) → 14 Deploy → 15 Android Release → 16 Monitoring.
 
 ## ۳۴. ریسک‌های فنی
 نوسان دسترسی Providerها (→ Fallback + Retry) · هزینهٔ Streaming (→ Settle بعد از استریم) · Race Condition مالی (→ FOR UPDATE + Idempotency) · RTL/Markdown پیچیده در Flutter · مقیاس فایل/Embedding (→ Queue در V2).
