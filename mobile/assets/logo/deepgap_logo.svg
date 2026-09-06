@@ -1,0 +1,27 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Deep Gap mark: a bold "D" whose core gathers neural fibers into one glowing node.
+       Drawn in a single ink color so a BlendMode.srcIn color filter can recolor it
+       white-on-black (dark) or black-on-white (light). -->
+  <g stroke="#111111" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- D outline -->
+    <path d="M150 108 L300 108 C362 108 404 172 404 256 C404 340 362 404 300 404 L150 404 Z"
+          stroke-width="46"/>
+    <!-- Fibers fanning from the left, converging to the core -->
+    <path d="M196 150 C250 190 268 224 300 256" stroke-width="7"/>
+    <path d="M188 205 C246 226 270 240 300 256" stroke-width="7"/>
+    <path d="M182 256 L300 256" stroke-width="7"/>
+    <path d="M188 307 C246 286 270 272 300 256" stroke-width="7"/>
+    <path d="M196 362 C250 322 268 288 300 256" stroke-width="7"/>
+  </g>
+  <g fill="#111111">
+    <!-- Fiber end nodes -->
+    <circle cx="196" cy="150" r="11"/>
+    <circle cx="186" cy="205" r="11"/>
+    <circle cx="180" cy="256" r="11"/>
+    <circle cx="186" cy="307" r="11"/>
+    <circle cx="196" cy="362" r="11"/>
+    <!-- Glowing core -->
+    <circle cx="300" cy="256" r="30" opacity="0.18"/>
+    <circle cx="300" cy="256" r="17"/>
+  </g>
+</svg>

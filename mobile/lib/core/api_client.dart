@@ -99,8 +99,18 @@ class ApiClient {
 
   Future<Response> conversations() => _dio.get('/api/v1/conversations');
 
+  Future<Response> messages(String conversationId) =>
+      _dio.get('/api/v1/conversations/$conversationId/messages');
+
   Future<Response> sendMessage(String conversationId, String content,
           {String modelCode = 'fast'}) =>
       _dio.post('/api/v1/conversations/$conversationId/messages',
           data: {'content': content, 'model_code': modelCode});
+
+  Future<Response> plans() => _dio.get('/api/v1/subscriptions/plans');
+
+  Future<Response> packages() => _dio.get('/api/v1/subscriptions/packages');
+
+  Future<Response> walletTransactions() =>
+      _dio.get('/api/v1/wallet/transactions');
 }

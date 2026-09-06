@@ -11,16 +11,16 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  # State management (Clean Architecture presentation layer)
-  flutter_bloc: ^8.1.6
+  # Simple, predictable state management
+  provider: ^6.1.2
   # Networking
   dio: ^5.7.0
-  # DI
-  get_it: ^8.0.2
   # Secure token storage
   flutter_secure_storage: ^9.2.2
-  # Routing
-  go_router: ^14.6.2
+  # SVG icons & logo (theme-aware, crisp at any size)
+  flutter_svg: ^2.0.16
+  # Declarative micro-animations for the "animate on select" feel
+  flutter_animate: ^4.5.2
   # Markdown / RTL rendering for chat
   flutter_markdown: ^0.7.4
   intl: ^0.19.0
@@ -32,4 +32,27 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  generate: true
+  assets:
+    - assets/logo/
+
+  # ------------------------------------------------------------------
+  # FONTS — Yekan Bakh (primary) + Yekan.
+  # The app already sets fontFamily: 'YekanBakh' in theme.dart, so as soon as
+  # you drop the .ttf files into assets/fonts/ and UNCOMMENT the block below,
+  # the whole UI switches to Yekan Bakh. Until then it falls back gracefully
+  # (see mobile/README.md and assets/fonts/README.md for where to get them).
+  # ------------------------------------------------------------------
+  # fonts:
+  #   - family: YekanBakh
+  #     fonts:
+  #       - asset: assets/fonts/YekanBakh-Regular.ttf
+  #         weight: 400
+  #       - asset: assets/fonts/YekanBakh-Medium.ttf
+  #         weight: 500
+  #       - asset: assets/fonts/YekanBakh-Bold.ttf
+  #         weight: 700
+  #       - asset: assets/fonts/YekanBakh-ExtraBold.ttf
+  #         weight: 800
+  #   - family: Yekan
+  #     fonts:
+  #       - asset: assets/fonts/Yekan.ttf
