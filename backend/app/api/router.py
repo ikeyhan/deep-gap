@@ -3,7 +3,16 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from app.api.v1 import auth, chat, health, models, users, wallet
+from app.api.v1 import (
+    auth,
+    chat,
+    health,
+    models,
+    payments,
+    subscriptions,
+    users,
+    wallet,
+)
 
 api_router = APIRouter()
 api_router.include_router(health.router)
@@ -12,3 +21,5 @@ api_router.include_router(users.router)
 api_router.include_router(models.router)
 api_router.include_router(chat.router)
 api_router.include_router(wallet.router)
+api_router.include_router(subscriptions.router)
+api_router.include_router(payments.router)

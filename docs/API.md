@@ -59,6 +59,26 @@ Authenticated endpoints require `Authorization: Bearer <access_token>`.
 | GET | `/wallet` | ✓ | Balance breakdown |
 | GET | `/wallet/transactions` | ✓ | Ledger (paginated) |
 
+## Subscriptions & Credit Packages
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/subscriptions/plans` | — | Active plans (free/plus/pro) |
+| GET | `/subscriptions/packages` | — | Active credit packages |
+| GET | `/subscriptions/me` | ✓ | Current active subscription (or null) |
+
+## Payments (server-side verification)
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/payments/initiate` | ✓ | `{product_type, code}` → payment + `payment_url`; price is server-set |
+| GET/POST | `/payments/callback` | — | Gateway redirect target; verifies + fulfills (idempotent) |
+| POST | `/payments/{id}/verify` | ✓ | Server-side receipt/IAP verification or re-check |
+| GET | `/payments/{id}` | ✓ | Payment status |
+
+**Flow:** `initiate` (creates `Payment`, price from DB) → user pays at gateway →
+`callback`/`verify` recomputes proof **server-side** → on success, credit/subscription
+is granted through the wallet ledger with a payment-scoped idempotency key (no
+double-grant on repeated callbacks). A client-reported success is never trusted.
+
 ## Health
 | Method | Path | Notes |
 |---|---|---|

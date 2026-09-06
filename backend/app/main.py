@@ -15,6 +15,7 @@ from app.core.config import settings
 from app.core.exceptions import AppError
 from app.core.logging import configure_logging, get_logger
 from app.services.ai.registry import bootstrap_providers
+from app.services.payments.registry import bootstrap_payment_providers
 
 log = get_logger("app")
 
@@ -23,6 +24,7 @@ log = get_logger("app")
 async def lifespan(_: FastAPI):
     configure_logging()
     bootstrap_providers()
+    bootstrap_payment_providers()
     if settings.sentry_dsn:
         sentry_sdk.init(dsn=settings.sentry_dsn, environment=settings.app_env)
     log.info("app_started", env=settings.app_env)
