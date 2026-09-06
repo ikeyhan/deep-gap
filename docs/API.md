@@ -53,6 +53,15 @@ Authenticated endpoints require `Authorization: Bearer <access_token>`.
 **Send message body:** `{content, model_code="fast", stream=false}`
 **Response:** user_message, assistant_message, `charged_credit`, `balance`.
 
+## Images
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/images/generate` | ✓ | `{prompt, model_code="designer", n, size}` — unit-priced, tier-gated |
+
+Charges scale with `n` (per-image unit price). Only image-capability models are
+accepted; text models are rejected. Chat rejects image models symmetrically
+(`not_a_text_model`) so each capability uses its own endpoint.
+
 ## Wallet
 | Method | Path | Auth | Notes |
 |---|---|---|---|

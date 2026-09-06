@@ -9,7 +9,12 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy import select
 
 from app.core.deps import CurrentUser, DbDep
-from app.core.exceptions import InsufficientCreditError, NotFoundError, ProviderError
+from app.core.exceptions import (
+    InsufficientCreditError,
+    NotFoundError,
+    ProviderError,
+    ValidationError,
+)
 from app.core.logging import get_logger
 from app.models.ai import ModelPricing
 from app.models.chat import Conversation, Message
@@ -118,6 +123,12 @@ async def _preflight(db, user, request_model_code: str):
     tier = await user_tier(db, user)
     ai_router = AIRouter(db)
     resolved = await ai_router.resolve(request_model_code, user_tier=tier)
+
+    if resolved.model.capability != "text":
+        raise ValidationError(
+            "این دستیار متنی نیست؛ از بخش مربوط به آن استفاده کنید",
+            error_code="not_a_text_model",
+        )
 
     pricing = (
         await db.execute(

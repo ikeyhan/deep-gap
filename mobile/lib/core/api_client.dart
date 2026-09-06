@@ -107,6 +107,11 @@ class ApiClient {
       _dio.post('/api/v1/conversations/$conversationId/messages',
           data: {'content': content, 'model_code': modelCode});
 
+  Future<Response> generateImage(String prompt,
+          {String modelCode = 'designer', int n = 1, String size = '1024x1024'}) =>
+      _dio.post('/api/v1/images/generate',
+          data: {'prompt': prompt, 'model_code': modelCode, 'n': n, 'size': size});
+
   Future<Response> plans() => _dio.get('/api/v1/subscriptions/plans');
 
   Future<Response> packages() => _dio.get('/api/v1/subscriptions/packages');

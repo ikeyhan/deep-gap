@@ -8,6 +8,7 @@ import '../../core/router.dart';
 import '../../core/tokens.dart';
 import '../auth/auth_flow.dart' show errorMessage;
 import '../chat/chat_page.dart';
+import '../image/image_page.dart';
 import '../wallet/wallet_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -53,8 +54,21 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  bool get _selectedIsImage {
+    final m = _models.firstWhere(
+      (e) => e['code'] == _selected,
+      orElse: () => const {'capability': 'text'},
+    );
+    return m['capability'] == 'image';
+  }
+
   Future<void> _startChat() async {
     if (_selected == null || _starting) return;
+    // Image personas (e.g. طراح) open the image studio, not the chat.
+    if (_selectedIsImage) {
+      await context.pushFade(ImagePage(modelCode: _selected!));
+      return;
+    }
     setState(() => _starting = true);
     try {
       final api = context.read<AppState>().api;
@@ -129,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                 child: _starting
                     ? const SizedBox(
                         height: 22, width: 22, child: CircularProgressIndicator(strokeWidth: 2.4))
-                    : const Text('گفت‌وگوی جدید'),
+                    : Text(_selectedIsImage ? 'تولید تصویر' : 'گفت‌وگوی جدید'),
               ),
             ),
     );
