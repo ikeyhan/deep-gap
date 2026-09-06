@@ -1,0 +1,74 @@
+# Deep Gap API — v1 Reference
+
+Base URL (dev): `http://localhost:8000/api/v1` — interactive docs at `/docs`.
+
+All error responses use the standard envelope:
+```json
+{
+  "error_code": "insufficient_credit",
+  "message": "اعتبار کافی نیست",
+  "details": null,
+  "request_id": "…",
+  "timestamp": "2026-01-01T00:00:00Z"
+}
+```
+Authenticated endpoints require `Authorization: Bearer <access_token>`.
+
+---
+
+## Auth
+| Method | Path | Body | Notes |
+|---|---|---|---|
+| POST | `/auth/otp/request` | `{phone}` | Rate-limited; returns `dev_code` in non-prod |
+| POST | `/auth/otp/verify` | `{phone, code, device_id?}` | Returns token pair + `is_new_user` |
+| POST | `/auth/refresh` | `{refresh_token}` | Rotates the refresh token |
+
+**Token response**
+```json
+{"access_token":"…","refresh_token":"…","token_type":"bearer","expires_in":1800,"is_new_user":true}
+```
+
+## Users
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/users/me` | ✓ | Profile + active tier |
+| DELETE | `/users/me` | ✓ | Soft-delete (privacy by design) |
+
+## Models
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/models` | ✓ | Enabled models, ordered for Home (persona codes) |
+
+## Conversations & Chat
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/conversations` | ✓ | Create conversation |
+| GET | `/conversations` | ✓ | List (pinned first) |
+| GET | `/conversations/{id}` | ✓ | Get one |
+| DELETE | `/conversations/{id}` | ✓ | Soft-delete |
+| GET | `/conversations/{id}/messages` | ✓ | Message history |
+| POST | `/conversations/{id}/messages` | ✓ | Send + get AI reply (charges credit) |
+| POST | `/conversations/{id}/messages/stream` | ✓ | SSE streaming; billing settles at end |
+
+**Send message body:** `{content, model_code="fast", stream=false}`
+**Response:** user_message, assistant_message, `charged_credit`, `balance`.
+
+## Wallet
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/wallet` | ✓ | Balance breakdown |
+| GET | `/wallet/transactions` | ✓ | Ledger (paginated) |
+
+## Health
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/health` | Liveness |
+| GET | `/health/ready` | DB + Redis readiness |
+
+---
+
+### Error codes (selection)
+`unauthorized` · `otp_invalid` · `otp_expired` · `otp_too_many_attempts` ·
+`rate_limited` · `insufficient_credit` · `model_not_found` · `model_disabled` ·
+`tier_required` · `region_blocked` · `provider_error` · `pricing_missing` ·
+`conversation_not_found` · `validation_error` · `internal_error`.
