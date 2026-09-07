@@ -1,0 +1,68 @@
+name: Build Android APK
+
+# Builds an installable Android APK for the Deep Gap Flutter app and uploads it
+# as a downloadable workflow artifact. Runs on demand (workflow_dispatch) and
+# whenever the mobile app changes on the feature branch.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/multi-model-ai-android-platform-sspwqo"]
+    paths:
+      - "mobile/**"
+      - ".github/workflows/build-apk.yml"
+
+jobs:
+  apk:
+    name: Release APK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.24.5"
+          cache: true
+
+      - name: Generate Android platform scaffolding
+        # The repo keeps only lib/ + assets + pubspec; this materializes the
+        # android/ project without overwriting existing app code.
+        run: flutter create --platforms=android --org app.deepgap --project-name deepgap .
+
+      - name: Set app name + allow cleartext (for dev-server testing)
+        run: |
+          MANIFEST=android/app/src/main/AndroidManifest.xml
+          sed -i 's/android:label="deepgap"/android:label="دیپ گپ"/' "$MANIFEST" || true
+          # Permit http:// so the app can reach a local/dev backend during testing.
+          sed -i 's/<application/<application android:usesCleartextTraffic="true"/' "$MANIFEST" || true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK (release, debug-signed → installable)
+        # Backend base URL is baked in; override with your server when you have one.
+        run: flutter build apk --release --dart-define=BASE_URL=http://10.0.2.2:8000
+
+      - name: Rename artifact
+        run: |
+          mkdir -p ../dist
+          cp build/app/outputs/flutter-apk/app-release.apk ../dist/deepgap.apk
+          ls -lh ../dist
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: deepgap-apk
+          path: dist/deepgap.apk
+          if-no-files-found: error
+          retention-days: 30
