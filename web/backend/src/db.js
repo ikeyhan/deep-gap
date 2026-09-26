@@ -3,7 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const Database = require('better-sqlite3');
 
-const DATA_DIR = path.join(__dirname, '..', 'data');
+// ATOM_DATA_DIR برای تست‌ها و استقرارهایی که داده را بیرون از پوشهٔ کد نگه می‌دارند
+const DATA_DIR = process.env.ATOM_DATA_DIR || path.join(__dirname, '..', 'data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 const db = new Database(path.join(DATA_DIR, 'atom.db'));
@@ -270,5 +271,65 @@ addColumn('orders', 'phone', 'TEXT');              // موبایل گیرنده 
 addColumn('orders', 'address', 'TEXT');            // آدرس ارسال
 addColumn('orders', 'owner', 'TEXT');              // نام‌کاربری مشتری (اگر وارد شده باشد)
 addColumn('orders', 'note', 'TEXT');               // توضیحات سفارش (کد تخفیف، هزینهٔ ارسال، یادداشت خریدار)
+addColumn('orders', 'product_id', 'INTEGER');      // شناسهٔ محصول (برای «محصولات من» در اپ و سایت)
+addColumn('orders', 'qty', 'INTEGER NOT NULL DEFAULT 1');
+addColumn('messages', 'owner', 'TEXT');            // نام‌کاربری فرستنده (اگر وارد شده باشد)
+addColumn('messages', 'reply', 'TEXT');            // پاسخ پشتیبانی — در حساب کاربر (سایت و اپ) نمایش داده می‌شود
+addColumn('office_messages', 'sender_owner', 'TEXT'); // نام‌کاربری شهروند فرستنده (اگر وارد شده باشد)
+
+/* ---------- جدول‌های API نسخهٔ ۱ (اپ اندروید و همگام‌سازی سایت) ---------- */
+db.exec(`
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  token_hash TEXT UNIQUE NOT NULL,              -- SHA-256 توکن؛ خود توکن هرگز ذخیره نمی‌شود
+  family TEXT NOT NULL,                          -- زنجیرهٔ چرخش؛ استفادهٔ مجدد = ابطال کل زنجیره
+  device TEXT,
+  expires_at TEXT NOT NULL,
+  revoked_at TEXT,
+  replaced_by INTEGER,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_refresh_user ON refresh_tokens(user_id);
+
+CREATE TABLE IF NOT EXISTS wishlist (
+  user_id INTEGER NOT NULL,
+  product_id INTEGER NOT NULL,
+  created_at TEXT DEFAULT (datetime('now')),
+  PRIMARY KEY (user_id, product_id)
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  type TEXT NOT NULL,                            -- order_placed | order_status | support_reply | office_reply | account
+  title TEXT NOT NULL,
+  body TEXT,
+  ref TEXT,                                      -- مرجع (کد سفارش، شناسهٔ پیام…) برای باز کردن صفحهٔ مربوط
+  read_at TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_notif_user ON notifications(user_id, id);
+
+CREATE TABLE IF NOT EXISTS devices (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  token TEXT NOT NULL,
+  platform TEXT NOT NULL DEFAULT 'android',
+  provider TEXT NOT NULL DEFAULT 'none',         -- fcm | none (دریافت با همگام‌سازی دوره‌ای)
+  app_version TEXT,
+  updated_at TEXT DEFAULT (datetime('now')),
+  UNIQUE (token)
+);
+
+CREATE TABLE IF NOT EXISTS idempotency_keys (
+  key TEXT NOT NULL,
+  scope TEXT NOT NULL,                           -- نام‌کاربری یا ip:… برای مهمان
+  response TEXT NOT NULL,
+  status INTEGER NOT NULL,
+  created_at TEXT DEFAULT (datetime('now')),
+  PRIMARY KEY (key, scope)
+);
+`);
 
 module.exports = db;

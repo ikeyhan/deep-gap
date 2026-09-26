@@ -4,15 +4,15 @@ const db = require('../db');
 const { requireAuth, requireRole, logActivity } = require('../auth');
 const { str, isMobile } = require('../validate');
 const banned = require('../banned');
+const notify = require('../notify');
 
 const router = express.Router();
 router.use(requireAuth);
 
-// سفارش‌های کاربر جاری (بر اساس حساب یا موبایل ثبت‌شده)
+// سفارش‌های کاربر جاری — فقط سفارش‌های متصل به همین حساب. (تطبیق با موبایل حذف شد:
+// موبایل تأییدشده نیست و هر کسی می‌توانست با شمارهٔ دیگری سفارش‌ها و آدرس او را ببیند.)
 router.get('/orders', (req, res) => {
-  const me = db.prepare('SELECT username,phone FROM admins WHERE id=?').get(req.admin.id) || {};
-  const items = db.prepare('SELECT * FROM orders WHERE owner=? OR (phone<>\'\' AND phone=?) ORDER BY id DESC LIMIT 200')
-    .all(me.username || '', me.phone || '-');
+  const items = db.prepare('SELECT * FROM orders WHERE owner=? ORDER BY id DESC LIMIT 200').all(req.admin.username);
   res.json({ items });
 });
 
@@ -32,6 +32,7 @@ router.put('/seller-orders/:id', requireRole('seller'), (req, res) => {
   const allowed = { pending: ['shipping'], review: ['shipping'], shipping: ['delivered'] };
   if (!(allowed[o.status] || []).includes(next)) return res.status(400).json({ error: 'تغییر وضعیت مجاز نیست.' });
   db.prepare('UPDATE orders SET status=? WHERE id=?').run(next, o.id);
+  notify.orderStatusChanged(o.code, o.status, next);
   logActivity(req, 'به‌روزرسانی سفارش', '#' + o.code + ' → ' + next);
   res.json({ ok: true });
 });

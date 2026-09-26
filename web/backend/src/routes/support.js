@@ -5,7 +5,7 @@
    کلید API فقط سمت سرور استفاده می‌شود و هرگز به مرورگر ارسال نمی‌شود. */
 const express = require('express');
 const db = require('../db');
-const { requireAuth, requireStaff, clientIp } = require('../auth');
+const { requireAuth, requireStaff, clientIp, verify } = require('../auth');
 const banned = require('../banned');
 const { str } = require('../validate');
 
@@ -121,8 +121,11 @@ router.post('/message', (req, res) => {
   var body = str(req.body.body, 4000).trim();
   if (!body) return res.status(400).json({ error: 'متن پیام را وارد کنید.' });
   if (!banned.guard(res, sender, subject, body)) return;
-  db.prepare('INSERT INTO messages (sender,subject,body,status) VALUES (?,?,?,?)')
-    .run(sender, subject, body, 'open');
+  // اگر کاربر وارد شده باشد، پیام به حسابش متصل می‌شود تا پاسخ را در سایت و اپ ببیند
+  var h = req.headers.authorization || '';
+  var who = h.startsWith('Bearer ') ? verify(h.slice(7)) : null;
+  db.prepare('INSERT INTO messages (sender,subject,body,status,owner) VALUES (?,?,?,?,?)')
+    .run(sender, subject, body, 'open', who ? who.username : '');
   res.status(201).json({ ok: true });
 });
 

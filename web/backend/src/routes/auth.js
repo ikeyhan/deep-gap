@@ -219,6 +219,7 @@ router.post('/change-password', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'رمز فعلی نادرست است.' });
   db.prepare('UPDATE admins SET password_hash=? WHERE id=?')
     .run(bcrypt.hashSync(next, 10), admin.id);
+  require('../v1/tokens').revokeAll(admin.id); // نشست‌های اپ نیز باطل می‌شوند
   logActivity(req, 'تغییر رمز', 'رمز عبور خود را تغییر داد');
   res.json({ ok: true });
 });

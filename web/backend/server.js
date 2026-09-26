@@ -32,8 +32,10 @@ const origins = (process.env.CORS_ORIGINS || '').split(',').map(s => s.trim()).f
 // بدون CORS_ORIGINS فقط همان دامنه (same-origin) مجاز است
 app.use(cors({ origin: origins.length ? origins : false, credentials: false }));
 
-app.use(express.json({ limit: '12mb' }));       // بدنه بزرگ برای متن مقاله
-app.use(express.urlencoded({ extended: true, limit: '12mb' }));
+// بدنه بزرگ برای متن مقاله (پنل)؛ API نسخهٔ ۱ پارسر سخت‌گیرانهٔ خودش را دارد
+const skipV1 = (mw) => (req, res, next) => (req.path.startsWith('/api/v1/') ? next() : mw(req, res, next));
+app.use(skipV1(express.json({ limit: '12mb' })));
+app.use(skipV1(express.urlencoded({ extended: true, limit: '12mb' })));
 
 // جلوگیری از دسترسی به فایل‌های سرور از طریق سرو استاتیک ریشه
 app.use((req, res, next) => {
@@ -42,6 +44,9 @@ app.use((req, res, next) => {
 });
 
 /* ---------- API ---------- */
+// API نسخهٔ ۱ (اپ اندروید و همگام‌سازی سایت) — بدنهٔ کوچک‌تر کافی است
+app.use('/api/v1', require('./src/v1'));
+
 app.get('/api/health', (req, res) => res.json({ ok: true, name: 'atom-backend', time: Date.now() }));
 
 app.use('/api/auth', require('./src/routes/auth'));

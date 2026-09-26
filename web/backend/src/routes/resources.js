@@ -4,6 +4,7 @@ const db = require('../db');
 const { requireAuth, requireRole, STAFF, logActivity } = require('../auth');
 const { str, int, oneOf, isNationalCode, isMobile } = require('../validate');
 const banned = require('../banned');
+const notify = require('../notify');
 
 // cfg: {
 //   table, label, fields:[{name,type,max,allowed,def}], writeRoles,
@@ -11,6 +12,7 @@ const banned = require('../banned');
 //   ownerInject,       // { colName: adminProp } مقادیری که هنگام ساخت برای seller اجباری می‌شوند
 //   bannedFields,      // ستون‌هایی که باید برای کلمات ممنوعه بررسی شوند
 //   afterWrite,        // callback پس از هر نوشتن
+//   onUpdate,          // (before, after) پس از ویرایش — برای اعلان تغییر وضعیت به کاربر
 // }
 function makeResource(cfg) {
   const router = express.Router();
@@ -111,6 +113,7 @@ function makeResource(cfg) {
     db.prepare(`UPDATE ${cfg.table} SET ${setClause} WHERE id=@id`).run({ ...data, id: +req.params.id });
     logActivity(req, `ویرایش ${cfg.label}`, data[cfg.fields[0].name] || ('#' + req.params.id));
     if (cfg.afterWrite) cfg.afterWrite();
+    if (cfg.onUpdate) { try { cfg.onUpdate(existing, { ...existing, ...data }); } catch (e) { /* اعلان اختیاری است */ } }
     res.json({ ok: true });
   });
 
@@ -141,6 +144,7 @@ const products = makeResource({
 
 const orders = makeResource({
   table: 'orders', label: 'سفارش', writeRoles: ['admin', 'support'],
+  onUpdate: (before, after) => notify.orderStatusChanged(after.code, before.status, after.status),
   fields: [
     { name: 'code', max: 40 }, { name: 'customer', max: 120 }, { name: 'product', max: 300 },
     { name: 'seller', max: 120 }, { name: 'amount', type: 'int' },
@@ -196,9 +200,15 @@ const comments = makeResource({
 
 const messages = makeResource({
   table: 'messages', label: 'پیام', writeRoles: ['admin', 'support'],
+  bannedFields: ['reply'],
+  onUpdate: (before, after) => {
+    if (after.reply && String(after.reply).trim() && after.reply !== before.reply) notify.supportReplied(after);
+  },
+  derive: (data, req, existing) => { data.owner = existing ? existing.owner : ''; },
   fields: [
     { name: 'sender', max: 120 }, { name: 'subject', max: 200 }, { name: 'body', max: 4000 },
     { name: 'status', allowed: ['open', 'pending', 'closed'], def: 'open' },
+    { name: 'reply', max: 4000 }, { name: 'owner', max: 60 },
   ],
 });
 
@@ -286,7 +296,12 @@ const officeMessages = makeResource({
   table: 'office_messages', label: 'پیام دفتر', writeRoles: ['admin', 'office'],
   ownerField: 'owner', ownerRole: 'office', ownerNameCol: 'office_name',
   bannedFields: ['reply'],
+  onUpdate: (before, after) => {
+    if (after.reply && String(after.reply).trim() && after.reply !== before.reply) notify.officeReplied(after);
+  },
   derive: (data, req, existing) => {
+    // فرستنده فقط از مسیر عمومی ثبت می‌شود و از پنل قابل تغییر نیست (مسیر اعلان پاسخ)
+    data.sender_owner = existing ? existing.sender_owner : '';
     // ثبت پاسخ توسط دفتر → وضعیت «پاسخ داده‌شده»
     if (req && req.admin && req.admin.role === 'office' && data.reply && String(data.reply).trim() && (!existing || !existing.reply)) {
       data.status = 'replied';
@@ -296,6 +311,7 @@ const officeMessages = makeResource({
     { name: 'office', max: 160 }, { name: 'sender_name', max: 120 }, { name: 'sender_phone', max: 20 },
     { name: 'body', max: 4000 }, { name: 'reply', max: 4000 },
     { name: 'status', allowed: ['open', 'replied', 'closed'], def: 'open' }, { name: 'owner', max: 60 },
+    { name: 'sender_owner', max: 60 },
   ],
 });
 

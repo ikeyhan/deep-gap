@@ -307,6 +307,7 @@
         { key: "sender", label: "فرستنده", type: "sub", sub: "subject", form: "text", required: true },
         { key: "subject", label: "موضوع", type: "text", form: "text" },
         { key: "body", label: "متن", type: "long", form: "textarea" },
+        { key: "reply", label: "پاسخ پشتیبانی (در حساب کاربر و اپ نمایش داده می‌شود)", type: "long", form: "textarea" },
         { key: "created_at", label: "تاریخ", type: "date" },
         { key: "status", label: "وضعیت", type: "chip", map: S.msgStatus, form: "select", options: { open: "باز", pending: "در حال بررسی", closed: "بسته" } },
       ],

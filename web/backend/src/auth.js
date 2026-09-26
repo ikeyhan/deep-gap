@@ -8,7 +8,7 @@ const SECRET = (function () {
   const env = process.env.JWT_SECRET || '';
   if (env.length >= 24 && !/change-this|dev-insecure/.test(env)) return env;
   const fs = require('fs'), path = require('path'), crypto = require('crypto');
-  const file = path.join(__dirname, '..', 'data', 'jwt-secret');
+  const file = path.join(process.env.ATOM_DATA_DIR || path.join(__dirname, '..', 'data'), 'jwt-secret');
   try { const s = fs.readFileSync(file, 'utf8').trim(); if (s.length >= 32) return s; } catch (e) {}
   const s = crypto.randomBytes(48).toString('hex');
   try { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, s, { mode: 0o600 }); } catch (e) {}
