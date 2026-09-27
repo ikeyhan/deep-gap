@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.room)
+    alias(libs.plugins.roborazzi)
 }
 
 // امضای انتشار از keystore.properties (خارج از گیت) خوانده می‌شود؛ هیچ رمزی در مخزن نیست
@@ -81,6 +82,8 @@ android {
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
+        // برای رندر واقعی صفحه‌ها در تست‌های اسکرین‌شات (Robolectric) لازم است
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
@@ -132,6 +135,14 @@ dependencies {
     implementation(libs.androidx.paging.compose)
 
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(platform(libs.compose.bom))
+    testImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.rule)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.okhttp.mockwebserver)
     testImplementation(libs.turbine)

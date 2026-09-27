@@ -276,14 +276,30 @@ fun OrderTimeline(status: OrderStatus) {
         }
         return
     }
+    val last = OrderStatus.timeline.lastIndex
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         OrderStatus.timeline.forEachIndexed { index, label ->
             val done = index <= status.step
             val current = index == status.step
             Column(
-                Modifier.weight(1f).padding(horizontal = 2.dp),
+                Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                // خط اتصال مراحل: نیمهٔ سمت مرحلهٔ قبل و نیمهٔ سمت مرحلهٔ بعد،
+                // تا مسیر پیشرفت در چیدمان راست‌به‌چپ پیوسته دیده شود
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    if (index > 0) {
+                        Box(
+                            Modifier.align(Alignment.CenterStart).fillMaxWidth(0.5f).height(2.dp)
+                                .background(if (done) MaterialTheme.colorScheme.primary else AtomTheme.colors.border),
+                        )
+                    }
+                    if (index < last) {
+                        Box(
+                            Modifier.align(Alignment.CenterEnd).fillMaxWidth(0.5f).height(2.dp)
+                                .background(if (index < status.step) MaterialTheme.colorScheme.primary else AtomTheme.colors.border),
+                        )
+                    }
                 Box(
                     Modifier.size(32.dp).clip(CircleShape)
                         .background(if (done) MaterialTheme.colorScheme.primary else AtomTheme.colors.surface2),
@@ -297,12 +313,14 @@ fun OrderTimeline(status: OrderStatus) {
                         Text(Formatters.number((index + 1).toLong()), style = MaterialTheme.typography.labelMedium, color = AtomTheme.colors.textTertiary)
                     }
                 }
+                }
                 Spacer(Modifier.height(6.dp))
                 Text(
                     label,
                     style = MaterialTheme.typography.labelSmall,
                     color = if (done) MaterialTheme.colorScheme.onSurface else AtomTheme.colors.textTertiary,
                     textAlign = TextAlign.Center, maxLines = 2, minLines = 2,
+                    modifier = Modifier.padding(horizontal = 2.dp),
                 )
             }
         }

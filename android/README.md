@@ -72,6 +72,11 @@ UI (Compose)  →  ViewModel  →  UseCase  →  Repository  →  Retrofit / Roo
                 بلاگ، مقاله، دربارهٔ ما، ورود، ثبت‌نام
 ```
 
+## تصاویر رابط کاربری
+
+`android/screenshots/` تصاویر رندرشدهٔ اجزای اصلی در هر دو تم را نگه می‌دارد (ساخته‌شده با
+`./gradlew recordRoborazziDebug`). برای بررسی سریع چیدمان راست‌به‌چپ و رنگ‌ها بدون دستگاه.
+
 ## فونت
 
 Vazirmatn (نسخهٔ ارقام فارسی) با پروانهٔ SIL OFL همراه اپ است:
