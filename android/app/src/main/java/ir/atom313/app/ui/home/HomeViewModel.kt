@@ -36,14 +36,14 @@ class HomeViewModel @Inject constructor(
 
     val wishedIds: StateFlow<Set<Long>> = wishlist.ids
 
+    init {
+        // نشانگر «کشیدن برای تازه‌سازی» تا پایان واقعی بارگذاری باقی می‌ماند
+        viewModelScope.launch { state.collect { if (!it.loading) _refreshing.value = false } }
+    }
+
     fun refresh() {
-        viewModelScope.launch {
-            _refreshing.value = true
-            refreshTrigger.value++
-            // نشانگر کشیدن تا دریافت نتیجه باقی می‌ماند
-            kotlinx.coroutines.delay(400)
-            _refreshing.value = false
-        }
+        _refreshing.value = true
+        refreshTrigger.value++
     }
 
     fun toggleWish(productId: Long, onMessage: (String) -> Unit) {
