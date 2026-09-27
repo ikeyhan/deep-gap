@@ -95,28 +95,54 @@
   }
   document.addEventListener("click", function (e) { if (e.target.closest(".fav-grid [data-wish]")) setTimeout(function () { renderFavs(); renderOrders(); }, 30); });
 
-  /* ---------- پیام به پشتیبانی ---------- */
+  /* ---------- پیام به پشتیبانی (با نمایش پاسخ — مشترک با اپ اندروید) ---------- */
+  var tickets = [], officeThreads = [];
+  function ticketCard(m) {
+    return '<div class="msg-item" style="align-items:flex-start"><div class="ava" style="background:var(--surface-2);display:grid;place-items:center"><svg class="icon"><use href="#icon-chat"/></svg></div>' +
+      '<div style="flex:1"><div class="flex between"><b style="font-size:.88rem">' + esc(m.subject || "پیام پشتیبانی") + '</b>' +
+      '<span class="faint" style="font-size:.72rem">' + pdate(m.createdAt) + '</span></div>' +
+      '<p class="muted" style="font-size:.83rem;margin:4px 0 0">' + esc(m.body) + '</p>' +
+      (m.reply ? '<div style="margin-top:10px;padding:10px 12px;border-radius:var(--radius-sm);background:var(--green-050)">' +
+        '<b style="font-size:.8rem;color:var(--green-700)">پاسخ پشتیبانی</b>' +
+        '<p style="font-size:.83rem;margin:4px 0 0;color:var(--green-700)">' + esc(m.reply) + '</p></div>'
+        : '<span class="faint" style="font-size:.74rem;display:block;margin-top:6px">در انتظار پاسخ پشتیبانی</span>') +
+      '</div></div>';
+  }
+  function officeCard(m) {
+    return '<div class="msg-item" style="align-items:flex-start"><div class="ava" style="background:var(--surface-2);display:grid;place-items:center"><svg class="icon"><use href="#icon-map-pin"/></svg></div>' +
+      '<div style="flex:1"><div class="flex between"><b style="font-size:.88rem">' + esc(m.office) + '</b>' +
+      '<span class="faint" style="font-size:.72rem">' + pdate(m.createdAt) + '</span></div>' +
+      '<p class="muted" style="font-size:.83rem;margin:4px 0 0">' + esc(m.body) + '</p>' +
+      (m.reply ? '<div style="margin-top:10px;padding:10px 12px;border-radius:var(--radius-sm);background:var(--green-050)">' +
+        '<b style="font-size:.8rem;color:var(--green-700)">پاسخ دفتر</b>' +
+        '<p style="font-size:.83rem;margin:4px 0 0;color:var(--green-700)">' + esc(m.reply) + '</p></div>' : "") +
+      '</div></div>';
+  }
   function renderMessages() {
     var p = panel("messages"); if (!p) return;
     var box = p.querySelector(".panel"); if (!box) return;
-    var sent = []; try { sent = JSON.parse(localStorage.getItem("atom_my_msgs_" + me.username) || "[]"); } catch (e) {}
     box.innerHTML = '<form id="msgForm"><div class="field"><label>موضوع</label><input type="text" id="msgSubject" placeholder="مثلاً پیگیری سفارش #۱۰۰۱"></div>' +
       '<div class="field" style="margin-top:12px"><label>متن پیام</label><textarea id="msgBody" placeholder="پیام خود را برای پشتیبانی اتم بنویسید…"></textarea></div>' +
       '<button class="btn btn-primary" style="margin-top:14px" type="submit">ارسال به پشتیبانی</button></form>' +
-      (sent.length ? '<h3 class="h-3" style="margin:24px 0 8px">پیام‌های ارسال‌شده</h3>' + sent.map(function (m) { return '<div class="msg-item"><div class="ava" style="background:var(--surface-2);display:grid;place-items:center"><svg class="icon"><use href="#icon-chat"/></svg></div><div style="flex:1"><div class="flex between"><b style="font-size:.88rem">' + esc(m.subject) + '</b><span class="faint" style="font-size:.72rem">' + esc(m.date) + '</span></div><p class="muted" style="font-size:.83rem;margin:4px 0 0">' + esc(m.body) + "</p></div></div>"; }).join("") : "");
+      (tickets.length ? '<h3 class="h-3" style="margin:24px 0 8px">پیام‌های من</h3>' + tickets.map(ticketCard).join("") : "") +
+      (officeThreads.length ? '<h3 class="h-3" style="margin:24px 0 8px">گفتگو با دفاتر محلات</h3>' + officeThreads.map(officeCard).join("") : "");
     var f = document.getElementById("msgForm");
     f.onsubmit = async function (e) {
       e.preventDefault();
       var sub = document.getElementById("msgSubject").value.trim(), body = document.getElementById("msgBody").value.trim();
-      if (!body) return Toast("متن پیام را بنویسید.", "err");
+      if (body.length < 5) return Toast("متن پیام را کامل‌تر بنویسید.", "err");
       var btn = f.querySelector("button"); btn.disabled = true;
       try {
-        await SA.supportMessage({ sender: (me.name || me.username) + " (" + (me.phone || me.username) + ")", subject: sub || "پیام از حساب کاربری", body: body });
-        sent.unshift({ subject: sub || "پیام از حساب کاربری", body: body, date: pdate(new Date().toISOString()) });
-        try { localStorage.setItem("atom_my_msgs_" + me.username, JSON.stringify(sent.slice(0, 30))); } catch (er) {}
+        var r = await SA.sendTicket(sub || "پیام از حساب کاربری", body);
+        if (r && r.item) tickets.unshift(r.item);
         Toast("پیام شما برای پشتیبانی ارسال شد ✓"); renderMessages();
       } catch (er) { Toast(er.message, "err"); btn.disabled = false; }
     };
+  }
+  async function loadMessages() {
+    try { tickets = (await SA.myTickets()).items || []; } catch (e) { tickets = []; }
+    try { officeThreads = (await SA.myOfficeThreads()).items || []; } catch (e) { officeThreads = []; }
+    renderMessages();
   }
 
   /* ---------- اعلان‌ها (از روی وضعیت سفارش‌ها) ---------- */
@@ -150,5 +176,5 @@
   async function loadProfile() { try { var d = await SA.profile(); if (d && d.user) paintProfile(d.user); } catch (e) {} }
   async function loadOrders() { try { var d = await SA.myOrders(); groups = groupOrders(d.items || []); } catch (e) { groups = []; } renderOrders(); }
   var tab = (location.hash || "").slice(1); var tb = tab && document.querySelector('[data-dash-tab="' + tab + '"]'); if (tb) setTimeout(function () { tb.click(); }, 0);
-  loadProfile(); loadOrders(); renderFavs(); renderMessages();
+  loadProfile(); loadOrders(); renderFavs(); loadMessages();
 })();

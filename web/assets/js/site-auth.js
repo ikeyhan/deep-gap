@@ -141,6 +141,16 @@
       return r;
     },
 
+    /* علاقه‌مندی‌ها و پشتیبانی — مشترک با اپ اندروید (API نسخهٔ ۱) */
+    apiV1: function (path, opts) { return api("/v1" + path, opts); },
+    wishlist: function () { return api("/v1/wishlist"); },
+    addWish: function (id) { return api("/v1/wishlist/" + encodeURIComponent(id), { method: "PUT" }); },
+    removeWish: function (id) { return api("/v1/wishlist/" + encodeURIComponent(id), { method: "DELETE" }); },
+    mergeWishlist: function (ids) { return api("/v1/wishlist/merge", { method: "POST", body: { productIds: ids } }); },
+    myTickets: function () { return api("/v1/support/messages"); },
+    sendTicket: function (subject, body) { return api("/v1/support/messages", { method: "POST", body: { subject: subject, body: body } }); },
+    myOfficeThreads: function () { return api("/v1/support/office-messages"); },
+
     /* دادهٔ عمومی */
     publicGet: function (path) { return api("/public/" + path); },
     publicSettings: function () { return api("/settings/public"); },

@@ -783,10 +783,37 @@
     var info=wishInfo(btn); if(!info.title) return;
     var w=getWish().map(function(x){ return typeof x==="string"?{title:x}:x; });
     var i=-1; w.forEach(function(x,k){ if(x.title===info.title) i=k; });
-    if(i===-1){ w.push(info); Toast("«"+info.title+"» به علاقه‌مندی‌ها افزوده شد"); } else { w.splice(i,1); Toast("از علاقه‌مندی‌ها حذف شد"); }
+    if(i===-1){ w.push(info); Toast("«"+info.title+"» به علاقه‌مندی‌ها افزوده شد"); pushWish(info.pid, true); }
+    else { pushWish(w[i].pid||info.pid, false); w.splice(i,1); Toast("از علاقه‌مندی‌ها حذف شد"); }
     setWish(w); paintWish();
   });
-  window.AtomWish={ get:function(){ return getWish().map(function(x){ return typeof x==="string"?{title:x}:x; }); }, set:setWish, paint:paintWish };
+  /* همگام‌سازی با سرور: برای کاربر واردشده، فهرست علاقه‌مندی روی حساب ذخیره می‌شود
+     تا بین سایت و اپ اندروید یکسان بماند. مهمان‌ها همان فهرست محلی را دارند. */
+  var SAuth=window.SiteAuth;
+  function wishIds(){ return getWish().map(function(x){ return parseInt(x&&x.pid,10); }).filter(function(n){ return n>0; }); }
+  async function syncWish(){
+    if(!SAuth || !SAuth.isAuthed()) return;
+    try{
+      var local=wishIds();
+      var d = local.length ? await SAuth.mergeWishlist(local) : await SAuth.wishlist();
+      var serverItems = d.items || null, ids = d.ids || [];
+      if(!serverItems){ try{ serverItems=(await SAuth.wishlist()).items; }catch(e){ serverItems=null; } }
+      if(serverItems){
+        // فهرست محلی را با دادهٔ سرور بازسازی می‌کنیم تا هر دو سمت یکی باشند
+        setWish(serverItems.map(function(p){
+          return { title:p.title, price:p.price, seller:p.seller||"", pid:String(p.id), thumb:"",
+                   img:p.image?('url("'+String(p.image).replace(/"/g,"%22")+'")'):"" };
+        }));
+        paintWish();
+      } else if(ids.length){ updateWishBadges(); }
+    }catch(e){ /* آفلاین یا سرور قدیمی → فهرست محلی کار می‌کند */ }
+  }
+  function pushWish(pid, add){
+    if(!SAuth || !SAuth.isAuthed() || !pid) return;
+    (add ? SAuth.addWish(pid) : SAuth.removeWish(pid)).catch(function(){});
+  }
+  window.AtomWish={ get:function(){ return getWish().map(function(x){ return typeof x==="string"?{title:x}:x; }); }, set:setWish, paint:paintWish, sync:syncWish };
+  syncWish();
   paintWish();
   new MutationObserver(function(m){ m.forEach(function(r){ [].forEach.call(r.addedNodes,function(n){ if(n.nodeType===1 && (n.matches("[data-wish]")||n.querySelector("[data-wish]"))) paintWish(n.parentNode||n); }); }); }).observe(document.body,{childList:true,subtree:true});
   updateWishBadges();
