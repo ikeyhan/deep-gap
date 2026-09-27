@@ -30,7 +30,9 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ReceiptLong
+import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material.icons.outlined.SupportAgent
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
@@ -82,6 +84,7 @@ fun AccountScreen(
     onSettings: () -> Unit,
     onSecurity: () -> Unit,
     onAbout: () -> Unit,
+    onBusinessPanel: () -> Unit,
     contentPadding: PaddingValues,
     viewModel: AccountViewModel = hiltViewModel(),
 ) {
@@ -149,6 +152,34 @@ fun AccountScreen(
                     )
                     Spacer(Modifier.height(Spacing.lg))
                     PrimaryButton("ورود یا ثبت‌نام", onLogin, Modifier.fillMaxWidth())
+                }
+            }
+
+            // فروشنده و دفتر محله حساب کارِ خود را در پنل وب دارند؛ اپ برای خرید است.
+            // بدون این کارت، آن‌ها وارد می‌شوند و هیچ مسیری به پنل خودشان نمی‌بینند.
+            val u = user
+            if (isSignedIn && u != null && u.role != Role.CUSTOMER) {
+                Row(
+                    Modifier.padding(horizontal = Spacing.screen, vertical = Spacing.sm).fillMaxWidth()
+                        .clip(RoundedCornerShape(Radius.md)).background(AtomTheme.colors.infoSoft).padding(Spacing.md),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        if (u.role == Role.SELLER) Icons.Outlined.Storefront else Icons.Outlined.LocationCity,
+                        contentDescription = null, tint = AtomTheme.colors.info, modifier = Modifier.size(22.dp),
+                    )
+                    Spacer(Modifier.width(Spacing.md))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            if (u.role == Role.SELLER) "پنل فروشندگان" else "پنل دفتر محله",
+                            style = MaterialTheme.typography.titleSmall, color = AtomTheme.colors.info,
+                        )
+                        Text(
+                            "مدیریت محصولات، سفارش‌ها و تنظیمات در وب‌سایت انجام می‌شود.",
+                            style = MaterialTheme.typography.labelSmall, color = AtomTheme.colors.info,
+                        )
+                    }
+                    TextButton(onClick = onBusinessPanel) { Text("باز کردن") }
                 }
             }
 

@@ -1,6 +1,8 @@
 package ir.atom313.app.ui
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -39,6 +41,7 @@ import ir.atom313.app.ui.orders.TrackScreen
 import ir.atom313.app.ui.product.ProductScreen
 import ir.atom313.app.ui.support.ChatScreen
 import ir.atom313.app.ui.support.SupportScreen
+import ir.atom313.app.ui.util.openExternal
 
 /**
  * گراف ناوبری اپ — تب‌های اصلی و صفحه‌های داخلی.
@@ -114,6 +117,7 @@ fun NavGraphBuilder.atomNavGraph(
     }
 
     composable(Routes.ACCOUNT) {
+        val context = LocalContext.current
         AccountScreen(
             isSignedIn = isSignedIn,
             unreadCount = appState.unreadNotifications,
@@ -129,6 +133,12 @@ fun NavGraphBuilder.atomNavGraph(
             onSettings = { navController.navigate(Routes.SETTINGS) },
             onSecurity = { navController.navigate(Routes.SECURITY) },
             onAbout = { navController.navigate(Routes.ABOUT) },
+            onBusinessPanel = {
+                // پنل فروشنده/دفتر فقط در وب وجود دارد و با مرورگر باز می‌شود
+                val user = (appState.session as? ir.atom313.app.domain.model.SessionState.SignedIn)?.user
+                val page = if (user?.role == ir.atom313.app.domain.model.Role.OFFICE) "office-dashboard.html" else "seller-dashboard.html"
+                openExternal(context, BuildConfig.WEB_BASE_URL.trimEnd('/') + "/" + page)
+            },
             contentPadding = contentPadding,
         )
     }
