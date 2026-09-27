@@ -69,7 +69,7 @@ fun ProductGrid(
                 }
             items.itemCount == 0 && refresh is LoadState.NotLoading ->
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    EmptyState(Icons.Outlined.SearchOff, emptyTitle, emptyMessage)
+                    EmptyState(Icons.Outlined.SearchOff, emptyTitle, message = emptyMessage)
                 }
         }
         items(items.itemCount, key = items.itemKey { it.id }) { index ->

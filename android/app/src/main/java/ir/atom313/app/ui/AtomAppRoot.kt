@@ -20,7 +20,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -72,7 +73,7 @@ fun AtomAppRoot(appState: AppUiState, appViewModel: AppViewModel, initialRoute: 
     val snackbar: (String) -> Unit = { message -> scope.launch { snackbarHostState.showSnackbar(message) } }
 
     // عرض پنجره در اختیار همهٔ صفحه‌ها تا چیدمان با تبلت و تاشو هماهنگ شود
-    val windowWidth = LocalConfiguration.current.screenWidthDp.dp
+    val windowWidth = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp() }
     CompositionLocalProvider(LocalWindowWidth provides windowWidth) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,

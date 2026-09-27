@@ -104,7 +104,7 @@ fun BlogScreen(
                 }
                 refresh is LoadState.Error && items.itemCount == 0 -> item { ErrorState(refresh.error.toAppError(), onRetry = items::retry) }
                 items.itemCount == 0 && refresh is LoadState.NotLoading -> item {
-                    EmptyState(Icons.Outlined.Article, "هنوز مطلبی منتشر نشده", "به‌زودی مطالب تازه اینجا قرار می‌گیرد.")
+                    EmptyState(Icons.Outlined.Article, "هنوز مطلبی منتشر نشده", message = "به‌زودی مطالب تازه اینجا قرار می‌گیرد.")
                 }
             }
             items(items.itemCount, key = items.itemKey { it.id }) { index ->
@@ -202,9 +202,12 @@ fun FaqScreen(
             state.isInitialLoading -> Column(Modifier.padding(Spacing.screen)) { repeat(5) { ListItemSkeleton(avatar = false) } }
             state.isFullError -> ErrorState(state.error!!, onRetry = viewModel::retry, modifier = Modifier.fillMaxSize())
             state.data.isNullOrEmpty() -> EmptyState(
-                Icons.AutoMirrored.Outlined.HelpOutline, "سؤالی ثبت نشده",
-                "برای پرسش خود می‌توانید به پشتیبانی پیام بدهید.",
-                "پشتیبانی", onSupport, Modifier.fillMaxSize(),
+                icon = Icons.AutoMirrored.Outlined.HelpOutline,
+                title = "سؤالی ثبت نشده",
+                modifier = Modifier.fillMaxSize(),
+                message = "برای پرسش خود می‌توانید به پشتیبانی پیام بدهید.",
+                actionLabel = "پشتیبانی",
+                onAction = onSupport,
             )
             else -> LazyColumn(
                 Modifier.fillMaxSize(),

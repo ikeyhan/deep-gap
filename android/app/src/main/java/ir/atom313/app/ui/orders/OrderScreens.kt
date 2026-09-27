@@ -98,9 +98,11 @@ fun OrdersScreen(
                 refresh is LoadState.Error && items.itemCount == 0 -> item { ErrorState(refresh.error.toAppError(), onRetry = items::retry) }
                 items.itemCount == 0 && refresh is LoadState.NotLoading -> item {
                     EmptyState(
-                        Icons.Outlined.ReceiptLong, "هنوز سفارشی ثبت نکرده‌اید",
-                        "اولین خرید خود را از فروشگاه‌های اتم ۳۱۳ انجام دهید.",
-                        "شروع خرید", onExplore,
+                        icon = Icons.Outlined.ReceiptLong,
+                        title = "هنوز سفارشی ثبت نکرده‌اید",
+                        message = "اولین خرید خود را از فروشگاه‌های اتم ۳۱۳ انجام دهید.",
+                        actionLabel = "شروع خرید",
+                        onAction = onExplore,
                     )
                 }
             }

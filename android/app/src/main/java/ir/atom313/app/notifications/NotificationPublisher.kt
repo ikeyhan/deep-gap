@@ -7,7 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
+import androidx.core.net.toUri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -48,7 +48,7 @@ class NotificationPublisher @Inject constructor(@ApplicationContext private val 
     fun show(n: AppNotification) {
         if (!canPost()) return
         val channel = if (n.type == NotificationType.SUPPORT_REPLY || n.type == NotificationType.OFFICE_REPLY) CHANNEL_SUPPORT else CHANNEL_ORDERS
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(DeepLinks.forNotification(n)), context, MainActivity::class.java)
+        val intent = Intent(Intent.ACTION_VIEW, DeepLinks.forNotification(n).toUri(), context, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pi = PendingIntent.getActivity(context, n.id.toInt(), intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val notification = NotificationCompat.Builder(context, channel)

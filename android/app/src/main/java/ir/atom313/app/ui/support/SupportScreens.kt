@@ -160,7 +160,7 @@ fun SupportScreen(
                     state.tickets.isInitialLoading -> item { repeat(3) { ListItemSkeleton() } }
                     state.tickets.isFullError -> item { ErrorState(state.tickets.error!!, onRetry = viewModel::load, onLogin = onLogin) }
                     state.tickets.data.isNullOrEmpty() -> item {
-                        EmptyState(Icons.Outlined.SupportAgent, "پیامی ارسال نکرده‌اید", "سؤال یا مشکل خود را از فرم بالا بفرستید.")
+                        EmptyState(Icons.Outlined.SupportAgent, "پیامی ارسال نکرده‌اید", message = "سؤال یا مشکل خود را از فرم بالا بفرستید.")
                     }
                     else -> items(state.tickets.data!!, key = { "t${it.id}" }) { TicketCard(it) }
                 }

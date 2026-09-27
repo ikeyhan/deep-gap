@@ -54,7 +54,16 @@
           (step >= 0 ? '<div class="track-steps">' + STEPS.map(function (s, i) { return '<div class="ts' + (i <= step ? " done" : "") + (i === step ? " cur" : "") + '"><span class="n">' + (i < step || step === 3 ? "✓" : fa(i + 1)) + "</span><b>" + s + "</b></div>"; }).join("") + "</div>"
             : '<div class="track-returned">این سفارش مرجوع شده است. برای پیگیری بازگشت وجه با پشتیبانی تماس بگیرید.</div>') +
           '<div class="track-items">' + items.map(function (i) { return '<div class="flex between"><span>' + esc(i.product) + ' <span class="faint">— ' + esc(i.seller) + "</span></span><b>" + money(i.amount) + "</b></div>"; }).join("") +
-          '<div class="flex between total"><span>مبلغ کل</span><b>' + money(total) + "</b></div></div></div>";
+          '<div class="flex between total"><span>مبلغ کل</span><b>' + money(total) + "</b></div></div>" +
+          // سفارش‌های ثبت‌شده بدون ورود را می‌توان با همین مدرک به حساب متصل کرد
+          (SA.isAuthed() ? '<button class="btn btn-sm" id="trClaim" style="margin-top:14px">افزودن این سفارش به حساب من</button>' : "") +
+          "</div>";
+        var cl = document.getElementById("trClaim");
+        if (cl) cl.onclick = async function () {
+          cl.disabled = true;
+          try { await SA.claimOrder(code.value, phone.value); cl.outerHTML = '<p class="faint" style="margin-top:14px">این سفارش به حساب شما اضافه شد. در «حساب من › سفارش‌ها» قابل پیگیری است.</p>'; }
+          catch (er) { Toast(er.message, "err"); cl.disabled = false; }
+        };
       } catch (e) { out.innerHTML = '<div class="panel" style="text-align:center;color:var(--text-2);">' + esc(e.message) + '<br><span class="faint" style="font-size:.8rem">کد سفارش را از پیامک یا صفحهٔ تأیید سفارش بردارید.</span></div>'; }
     }
     document.getElementById("trBtn").addEventListener("click", track);

@@ -50,10 +50,10 @@ import ir.atom313.app.core.designsystem.theme.Spacing
 fun EmptyState(
     icon: ImageVector,
     title: String,
+    modifier: Modifier = Modifier,
     message: String? = null,
     actionLabel: String? = null,
     onAction: (() -> Unit)? = null,
-    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier.fillMaxWidth().padding(horizontal = Spacing.xxl, vertical = Spacing.xxxl),

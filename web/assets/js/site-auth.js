@@ -147,6 +147,7 @@
     addWish: function (id) { return api("/v1/wishlist/" + encodeURIComponent(id), { method: "PUT" }); },
     removeWish: function (id) { return api("/v1/wishlist/" + encodeURIComponent(id), { method: "DELETE" }); },
     mergeWishlist: function (ids) { return api("/v1/wishlist/merge", { method: "POST", body: { productIds: ids } }); },
+    claimOrder: function (code, phone) { return api("/v1/orders/claim", { method: "POST", body: { code: toEn(code).trim(), phone: toEn(phone).trim() } }); },
     myTickets: function () { return api("/v1/support/messages"); },
     sendTicket: function (subject, body) { return api("/v1/support/messages", { method: "POST", body: { subject: subject, body: body } }); },
     myOfficeThreads: function () { return api("/v1/support/office-messages"); },

@@ -39,16 +39,19 @@ object Formatters {
         return null
     }
 
+    // قالب‌بندی با «اسکلتون» ICU: ترتیب و جداکننده‌ها را خود تقویم فارسی تعیین می‌کند
+    private fun skeleton(pattern: String) = android.icu.text.DateFormat.getInstanceForSkeleton(pattern, PERSIAN)
+
     /** ۱۴ مهر ۱۴۰۵ */
     fun persianDate(raw: String?): String {
         val d = parseServerDate(raw) ?: return ""
-        return android.icu.text.SimpleDateFormat("d MMMM y", PERSIAN).format(d)
+        return skeleton("dMMMMy").format(d)
     }
 
     /** ۱۴۰۵/۰۷/۱۴ */
     fun persianShortDate(raw: String?): String {
         val d = parseServerDate(raw) ?: return ""
-        return android.icu.text.SimpleDateFormat("y/MM/dd", PERSIAN).format(d)
+        return skeleton("yMMdd").format(d)
     }
 
     /** «۳ ساعت پیش» — برای اعلان‌ها و پیام‌ها */

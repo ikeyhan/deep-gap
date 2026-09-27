@@ -252,9 +252,9 @@ private fun SearchField(value: String, onValueChange: (String) -> Unit, onSearch
 private fun RecentSearches(items: List<String>, onPick: (String) -> Unit, onClear: () -> Unit) {
     if (items.isEmpty()) {
         EmptyState(
-            Icons.Outlined.Search,
-            "چه چیزی لازم دارید؟",
-            "نام محصول، دسته‌بندی یا فروشگاه را بنویسید تا نتایج را ببینید.",
+            icon = Icons.Outlined.Search,
+            title = "چه چیزی لازم دارید؟",
+            message = "نام محصول، دسته‌بندی یا فروشگاه را بنویسید تا نتایج را ببینید.",
         )
         return
     }
@@ -391,7 +391,7 @@ private fun <T : Any> PagedList(
             refresh is LoadState.Loading && items.itemCount == 0 -> items(6) { ListItemSkeleton() }
             refresh is LoadState.Error && items.itemCount == 0 -> item { ErrorState(refresh.error.toAppError(), onRetry = items::retry) }
             items.itemCount == 0 && refresh is LoadState.NotLoading -> item {
-                EmptyState(emptyIcon, emptyTitle, "عبارت جستجو را تغییر دهید.")
+                EmptyState(emptyIcon, emptyTitle, message = "عبارت جستجو را تغییر دهید.")
             }
         }
         items(items.itemCount, key = items.itemKey { key(it) }) { index ->

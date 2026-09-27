@@ -248,9 +248,12 @@ fun WishlistScreen(
             ) { items(4) { ProductCardSkeleton() } }
             state.isFullError -> ErrorState(state.error!!, onRetry = viewModel::load, modifier = Modifier.fillMaxSize())
             state.data.isNullOrEmpty() -> EmptyState(
-                Icons.Outlined.FavoriteBorder, "فهرست علاقه‌مندی شما خالی است",
-                "با زدن ♡ روی هر محصول، آن را اینجا ذخیره کنید.",
-                "مشاهدهٔ محصولات", onExplore, Modifier.fillMaxSize(),
+                icon = Icons.Outlined.FavoriteBorder,
+                title = "فهرست علاقه‌مندی شما خالی است",
+                modifier = Modifier.fillMaxSize(),
+                message = "با زدن ♡ روی هر محصول، آن را اینجا ذخیره کنید.",
+                actionLabel = "مشاهدهٔ محصولات",
+                onAction = onExplore,
             )
             else -> androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
                 columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(columns),
@@ -302,9 +305,10 @@ fun NotificationsScreen(
             state.isInitialLoading -> Column(Modifier.padding(Spacing.screen)) { repeat(5) { ListItemSkeleton() } }
             state.isFullError -> ErrorState(state.error!!, onRetry = viewModel::load, modifier = Modifier.fillMaxSize())
             state.data.isNullOrEmpty() -> EmptyState(
-                Icons.Outlined.NotificationsNone, "اعلانی ندارید",
-                "وضعیت سفارش‌ها و پاسخ پشتیبانی اینجا نمایش داده می‌شود.",
+                icon = Icons.Outlined.NotificationsNone,
+                title = "اعلانی ندارید",
                 modifier = Modifier.fillMaxSize(),
+                message = "وضعیت سفارش‌ها و پاسخ پشتیبانی اینجا نمایش داده می‌شود.",
             )
             else -> LazyColumn(
                 Modifier.fillMaxSize(),

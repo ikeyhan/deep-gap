@@ -3,7 +3,7 @@ package ir.atom313.app.ui.util
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import android.widget.Toast
 
 /** اشتراک‌گذاری متن با اپ‌های دیگر (اشتراک محصول، کد سفارش). */
@@ -22,7 +22,7 @@ fun openExternal(context: Context, uri: String) {
         else -> "https://$uri"
     }
     try {
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(normalized)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        context.startActivity(Intent(Intent.ACTION_VIEW, normalized.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     } catch (e: ActivityNotFoundException) {
         Toast.makeText(context, "برنامه‌ای برای باز کردن این پیوند یافت نشد.", Toast.LENGTH_SHORT).show()
     }
