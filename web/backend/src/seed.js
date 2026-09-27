@@ -198,7 +198,7 @@ function seed() {
     ['chat_title', 'پشتیبان سایت'],
     ['chat_welcome', 'سلام! 👋 من دستیار پشتیبانی اتم هستم. می‌توانید یکی از سؤالات متداول را انتخاب کنید، با هوش مصنوعی گفتگو کنید، یا برای ما پیام بگذارید.'],
     ['chat_avatar', ''],
-    ['chat_color', '#149B3E'],
+    ['chat_color', '#0E7A38'],
     ['ai_provider', 'openai'],
     ['ai_base_url', 'https://api.openai.com/v1'],
     ['ai_model', 'gpt-4o-mini'],
@@ -235,7 +235,7 @@ function seed() {
   // تبلیغات نمونه (نوار بالا + مربع گوشهٔ چپ)
   if (db.prepare('SELECT COUNT(*) c FROM ads').get().c === 0) {
     const ad = db.prepare('INSERT INTO ads (placement,title,text,image,link,cta_label,bg,sort,status) VALUES (?,?,?,?,?,?,?,?,?)');
-    ad.run('top', 'جشنواره فروش اتم ۳۱۳', 'همین حالا با کد ATOM20 روی همهٔ محصولات ۲۰٪ تخفیف بگیر!', '', 'offers.html', 'خرید کن', '#149B3E', 1, 'active');
+    ad.run('top', 'جشنواره فروش اتم ۳۱۳', 'همین حالا با کد ATOM20 روی همهٔ محصولات ۲۰٪ تخفیف بگیر!', '', 'offers.html', 'خرید کن', '#0E7A38', 1, 'active');
     ad.run('corner', 'پیشنهاد ویژهٔ چرم', 'تا ۲۰٪ تخفیف', 'assets/img/ads/corner-ad.jpg', 'products.html', 'مشاهده', '', 1, 'active');
   }
 

@@ -13,6 +13,8 @@ object BrandColors {
     val GradStart = Color(0xFF0E7A38)
     val GradEnd = Color(0xFF22B14C)
     val Gold500 = Color(0xFFF0A020)
+    /** کهربایی تیره‌تر برای ستارهٔ امتیاز روی پس‌زمینهٔ روشن (کنتراست ۳٫۴:۱) */
+    val Gold700 = Color(0xFFC47A00)
     val Red500 = Color(0xFFE5484D)
     val Red050 = Color(0xFFFDECEC)
     val Blue500 = Color(0xFF3B82F6)

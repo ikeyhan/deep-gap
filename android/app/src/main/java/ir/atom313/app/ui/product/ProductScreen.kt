@@ -149,7 +149,7 @@ fun ProductScreen(
 }
 
 @Composable
-private fun ProductContent(
+internal fun ProductContent(
     detail: ProductDetail,
     wished: Boolean,
     reviewForm: ReviewFormState,

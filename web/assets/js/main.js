@@ -458,7 +458,7 @@
   function aesc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
   // مسیر تصویرهای آپلودی؛ اگر نبود، به نمونهٔ متنی/SVG برمی‌گردد
   var FALLBACK = {
-    top: [{ title:"جشنواره فروش اتم ۳۱۳", text:"همین حالا با کد ATOM20 روی همهٔ محصولات ۲۰٪ تخفیف بگیر!", link:"offers.html", cta_label:"خرید کن", bg:"#149B3E" }],
+    top: [{ title:"جشنواره فروش اتم ۳۱۳", text:"همین حالا با کد ATOM20 روی همهٔ محصولات ۲۰٪ تخفیف بگیر!", link:"offers.html", cta_label:"خرید کن", bg:"#0E7A38" }],
     corner: [{ title:"پیشنهاد ویژهٔ چرم", image:"assets/img/ads/corner-ad.jpg", link:"products.html" }]
   };
   function closed(key){ try{ return sessionStorage.getItem(key)==="1"; }catch(e){ return false; } }

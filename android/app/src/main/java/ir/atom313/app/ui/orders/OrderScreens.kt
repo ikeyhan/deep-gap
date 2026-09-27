@@ -178,7 +178,7 @@ fun OrderDetailScreen(
 }
 
 @Composable
-private fun OrderDetailContent(order: Order, onProduct: (Long) -> Unit, onSupport: () -> Unit, contentPadding: PaddingValues) {
+internal fun OrderDetailContent(order: Order, onProduct: (Long) -> Unit, onSupport: () -> Unit, contentPadding: PaddingValues) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             .padding(start = Spacing.screen, end = Spacing.screen, top = Spacing.md)

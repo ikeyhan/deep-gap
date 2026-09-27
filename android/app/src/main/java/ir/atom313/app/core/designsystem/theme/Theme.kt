@@ -51,7 +51,7 @@ private val LightExtended = AtomExtendedColors(
     warning = Color(0xFFB26A00), warningSoft = Color(0xFFFFF4E0),
     danger = BrandColors.Red500, dangerSoft = BrandColors.Red050,
     info = Color(0xFF2563EB), infoSoft = Color(0xFFEAF1FE),
-    star = BrandColors.Gold500, isDark = false,
+    star = BrandColors.Gold700, isDark = false,
 )
 
 private val DarkExtended = AtomExtendedColors(
@@ -66,7 +66,9 @@ private val DarkExtended = AtomExtendedColors(
 )
 
 private val LightScheme = lightColorScheme(
-    primary = BrandColors.Green600, onPrimary = Color.White,
+    // سبز تیره‌تر برند (ابتدای گرادیان سایت): متن سفید روی آن ۵٫۴:۱ کنتراست دارد،
+    // در حالی که سبز اصلی ۳٫۶:۱ بود و برای متن، حد استاندارد WCAG AA را رد نمی‌کرد
+    primary = BrandColors.GradStart, onPrimary = Color.White,
     primaryContainer = BrandColors.Green100, onPrimaryContainer = BrandColors.Green700,
     secondary = BrandColors.Green700, onSecondary = Color.White,
     secondaryContainer = BrandColors.Green050, onSecondaryContainer = BrandColors.Green700,
@@ -82,7 +84,8 @@ private val LightScheme = lightColorScheme(
 )
 
 private val DarkScheme = darkColorScheme(
-    primary = BrandColors.Green500, onPrimary = Color.White,
+    // در تم تاریک، متن تیره روی سبز روشن خوانده می‌شود (۶٫۷:۱)؛ متن سفید فقط ۲٫۸:۱ بود
+    primary = BrandColors.Green500, onPrimary = DarkTokens.Bg,
     primaryContainer = Color(0xFF123D22), onPrimaryContainer = BrandColors.Green100,
     secondary = BrandColors.Green400, onSecondary = DarkTokens.Bg,
     secondaryContainer = Color(0xFF16311F), onSecondaryContainer = BrandColors.Green100,

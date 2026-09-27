@@ -19,11 +19,18 @@
   /* ---- text ---- */
   --text-1: #1A1D1B;
   --text-2: #565B57;
-  --text-3: #8A908B;
+  --text-3: #6A706B;   /* ۵٫۱:۱ روی سفید، ۴٫۸:۱ روی پس‌زمینهٔ صفحه */
   --text-inverse: #FFFFFF;
 
   /* ---- brand green ---- */
   --green-700: #0E6E30;
+  /* سبز دکمه‌ها: متن سفید روی آن ۵٫۴:۱ کنتراست دارد (استاندارد WCAG AA برای متن)،
+     در حالی که --green-600 فقط ۳٫۶:۱ می‌داد. همان سبزِ ابتدای گرادیان برند است. */
+  --green-650: #0E7A38;
+  /* متن روی چیپ سبز ملایم: --green-600 روی --green-050 فقط ۳٫۳:۱ بود */
+  --on-green-soft: #0E7A38;
+  /* قرمز نشان‌ها: متن سفید ۱۲ پیکسلی روی --red-500 فقط ۳٫۹:۱ می‌داد */
+  --red-600: #C42A30;
   --green-600: #149B3E;
   --green-500: #1BB24B;
   --green-400: #37C463;
@@ -86,10 +93,12 @@ html[data-theme="dark"]{
 
   --text-1: #EEF1EF;
   --text-2: #A7ADA8;
-  --text-3: #71776F;
+  --text-3: #828981;   /* ۴٫۹:۱ روی سطح تیره */
   --text-inverse: #0E110F;
 
   --green-050: rgba(34,177,76,.12);
+  --on-green-soft: #37C463;
+  --red-600: #C42A30;
   --gold-050: rgba(34,177,76,.12);
   --red-050: rgba(229,72,77,.14);
 
@@ -137,7 +146,7 @@ h1,h2,h3,h4{ margin:0; font-weight:800; letter-spacing:-.01em; color:var(--text-
 .h-3{ font-size:1.1rem; line-height:1.4; }
 .eyebrow{
   display:inline-flex; align-items:center; gap:8px;
-  font-size:.8rem; font-weight:700; color:var(--green-600);
+  font-size:.8rem; font-weight:700; color:var(--on-green-soft);
   background:var(--green-050); padding:7px 15px; border-radius:var(--radius-pill);
 }
 .lead{ color:var(--text-2); font-size:1.02rem; line-height:1.9; }
@@ -175,12 +184,12 @@ h1,h2,h3,h4{ margin:0; font-weight:800; letter-spacing:-.01em; color:var(--text-
 .btn .icon{ width:18px; height:18px; }
 .btn:hover{ border-color:var(--border-strong); background:var(--surface-2); }
 .btn:active{ transform:translateY(1px); }
-.btn-primary{ background:var(--green-600); border-color:var(--green-600); color:#fff; box-shadow:0 6px 16px rgba(20,155,62,.24); }
+.btn-primary{ background:var(--green-650); border-color:var(--green-650); color:#fff; box-shadow:0 6px 16px rgba(20,155,62,.24); }
 .btn-primary:hover{ background:var(--green-700); border-color:var(--green-700); box-shadow:0 8px 20px rgba(20,155,62,.32); }
 .btn-gold{ background:var(--gold-500); border-color:var(--gold-500); color:#3a2a06; }
 .btn-gold:hover{ background:var(--gold-400); border-color:var(--gold-400); }
 .btn-ghost{ background:transparent; border-color:transparent; color:var(--text-2); }
-.btn-ghost:hover{ color:var(--green-600); background:var(--green-050); border-color:transparent; }
+.btn-ghost:hover{ color:var(--on-green-soft); background:var(--green-050); border-color:transparent; }
 .btn-sm{ padding:8px 16px; font-size:.83rem; }
 .btn-lg{ padding:15px 32px; font-size:1rem; }
 .btn-block{ width:100%; }
@@ -226,12 +235,12 @@ h1,h2,h3,h4{ margin:0; font-weight:800; letter-spacing:-.01em; color:var(--text-
 /* CTA group pushes itself + the icon actions to the far end (left in RTL) */
 .header-cta{ display:flex; align-items:center; gap:8px; flex-shrink:0; margin-inline-start:auto; }
 .header-cta .btn{ padding:9px 16px; font-size:.84rem; }
-.header-cta .btn-affiliate{ background:var(--green-050); border-color:transparent; color:var(--green-600); }
+.header-cta .btn-affiliate{ background:var(--green-050); border-color:transparent; color:var(--on-green-soft); }
 .header-cta .btn-affiliate:hover{ background:var(--green-100); border-color:transparent; color:var(--green-700); }
 .header-actions{ display:flex; align-items:center; gap:6px; flex-shrink:0; }
 .header-actions .divider{ width:1px; height:26px; background:var(--border); margin:0 6px; flex-shrink:0; }
 .header-actions .divider{ width:1px; height:26px; background:var(--border); margin:0 4px; }
-.badge-dot{ position:absolute; top:6px; left:7px; min-width:16px; height:16px; padding:0 4px; border-radius:var(--radius-pill); background:var(--red-500); color:#fff; font-size:.6rem; font-weight:800; display:flex; align-items:center; justify-content:center; border:2px solid var(--surface); }
+.badge-dot{ position:absolute; top:6px; left:7px; min-width:16px; height:16px; padding:0 4px; border-radius:var(--radius-pill); background:var(--red-600); color:#fff; font-size:.6rem; font-weight:800; display:flex; align-items:center; justify-content:center; border:2px solid var(--surface); }
 
 .theme-toggle{ width:46px; height:28px; border-radius:var(--radius-pill); background:var(--surface-2); border:1px solid var(--border); position:relative; flex-shrink:0; }
 .theme-toggle .thumb{ position:absolute; top:2px; right:2px; width:22px; height:22px; border-radius:50%; background:var(--green-600); display:flex; align-items:center; justify-content:center; color:#fff; transition:transform var(--dur) var(--ease-out); }
@@ -242,7 +251,7 @@ html[data-theme="dark"] .theme-toggle .thumb{ transform:translateX(-18px); }
 /* secondary category nav row */
 .nav-main{ display:flex; align-items:center; gap:2px; padding:6px 0 10px; border-top:1px solid var(--border); }
 .nav-main a{ padding:8px 14px; border-radius:var(--radius-sm); font-size:.9rem; font-weight:600; color:var(--text-2); transition:all var(--dur-fast) var(--ease); display:flex; align-items:center; gap:6px; }
-.nav-main a:hover, .nav-main a.active{ color:var(--green-600); background:var(--green-050); }
+.nav-main a:hover, .nav-main a.active{ color:var(--on-green-soft); background:var(--green-050); }
 .nav-main a.all{ color:#fff; background:var(--green-600); font-weight:700; }
 .nav-main a.all:hover{ background:var(--green-700); }
 .nav-main a .icon{ width:16px; height:16px; }
@@ -301,7 +310,7 @@ html[data-theme="dark"] .theme-toggle .thumb{ transform:translateX(-18px); }
 /* ---------- Tabs ---------- */
 .tabbar{ display:inline-flex; gap:4px; padding:4px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-pill); }
 .tabbar button{ border:none; background:transparent; padding:9px 20px; border-radius:var(--radius-pill); font-size:.85rem; font-weight:700; color:var(--text-2); transition:all var(--dur-fast) var(--ease); }
-.tabbar button.active{ background:var(--green-600); color:#fff; }
+.tabbar button.active{ background:var(--green-650); color:#fff; }
 
 /* ---------- Product cards ---------- */
 .prod-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
@@ -309,8 +318,8 @@ html[data-theme="dark"] .theme-toggle .thumb{ transform:translateX(-18px); }
 .prod-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-raised); border-color:var(--border-strong); }
 .prod-thumb{ position:relative; margin:12px; height:186px; border-radius:var(--radius-sm); overflow:hidden; background:var(--surface-2); }
 .prod-thumb .ph{ position:absolute; inset:0; }
-.prod-thumb .badge{ position:absolute; top:10px; right:10px; background:var(--red-500); color:#fff; font-size:.72rem; font-weight:800; padding:4px 9px; border-radius:var(--radius-pill); }
-.prod-thumb .badge.new{ background:var(--green-600); }
+.prod-thumb .badge{ position:absolute; top:10px; right:10px; background:var(--red-600); color:#fff; font-size:.72rem; font-weight:800; padding:4px 9px; border-radius:var(--radius-pill); }
+.prod-thumb .badge.new{ background:var(--green-650); }
 .wish-btn{ position:absolute; top:10px; left:10px; width:34px; height:34px; border-radius:50%; border:1px solid var(--border); background:var(--surface); color:var(--text-2); display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-raised-sm); transition:all var(--dur-fast) var(--ease); }
 .wish-btn .icon{ width:16px; height:16px; }
 .wish-btn:hover, .wish-btn.active{ color:var(--red-500); border-color:var(--red-500); }
@@ -320,7 +329,9 @@ html[data-theme="dark"] .theme-toggle .thumb{ transform:translateX(-18px); }
 .prod-seller{ display:flex; align-items:center; gap:6px; font-size:.76rem; color:var(--text-3); }
 .prod-seller .icon{ width:13px; height:13px; color:var(--green-600); }
 .rating{ display:flex; align-items:center; gap:5px; font-size:.78rem; color:var(--text-2); }
-.rating .icon{ width:14px; height:14px; color:var(--gold-500); }
+/* ستاره روی پس‌زمینهٔ روشن با کهربایی تیره‌تر (۳٫۴:۱) دیده می‌شود؛ در تم تاریک روشن می‌ماند */
+.rating .icon{ width:14px; height:14px; color:#C47A00; }
+html[data-theme="dark"] .rating .icon{ color:var(--gold-500); }
 .prod-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:6px; }
 .price{ display:flex; flex-direction:column; }
 .price b{ font-size:1rem; font-weight:800; }

@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -156,7 +157,7 @@ private fun HomeHeader(unreadCount: Int, onSearch: () -> Unit, onNotifications: 
 }
 
 @Composable
-private fun HomeContent(
+internal fun HomeContent(
     home: Home,
     wished: Set<Long>,
     contentPadding: PaddingValues,
@@ -331,22 +332,44 @@ private fun SlidesPager(slides: List<Slide>, onCta: () -> Unit) {
     }
 }
 
+/** رنگ‌های ملایم برای تمایز دسته‌ها؛ از روی نام دسته انتخاب می‌شوند تا همیشه ثابت بمانند. */
+private val categoryTints = listOf(
+    Color(0xFF149B3E), Color(0xFF0E7A38), Color(0xFFB26A00), Color(0xFF2F8F83),
+    Color(0xFF4A7C59), Color(0xFF6B8E23), Color(0xFF2563EB), Color(0xFF8A5A2B),
+)
+
 @Composable
 private fun CategoryChip(category: Category, onClick: () -> Unit) {
+    val base = categoryTints[(category.name.hashCode().mod(categoryTints.size))]
+    // در تم تاریک رنگ‌های تیره خوانا نیستند؛ به سفید نزدیک می‌شوند تا کنتراست کافی بماند
+    val tint = if (AtomTheme.colors.isDark) lerp(base, Color.White, 0.45f) else base
     Column(
         Modifier.width(84.dp).clip(RoundedCornerShape(Radius.md)).clickable(onClick = onClick).padding(vertical = Spacing.sm),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
-            Modifier.size(56.dp).clip(CircleShape).background(AtomTheme.colors.brandSoft),
+            Modifier.size(56.dp).clip(CircleShape)
+                .background(base.copy(alpha = if (AtomTheme.colors.isDark) 0.24f else 0.12f)),
             contentAlignment = Alignment.Center,
-        ) { LogoMark(Modifier.size(26.dp), MaterialTheme.colorScheme.primary) }
+        ) {
+            // حرف اول دستهٔ‌بندی — خواناتر و قابل‌تفکیک‌تر از تکرار یک نماد یکسان
+            Text(
+                category.name.trim().take(1),
+                style = MaterialTheme.typography.titleLarge,
+                color = tint,
+            )
+        }
         Spacer(Modifier.height(6.dp))
         Text(
-            category.name, style = MaterialTheme.typography.labelSmall, maxLines = 2,
+            category.name, style = MaterialTheme.typography.labelSmall, maxLines = 1,
             overflow = TextOverflow.Ellipsis, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            minLines = 2,
         )
+        if (category.count > 0) {
+            Text(
+                Formatters.number(category.count.toLong()) + " کالا",
+                style = MaterialTheme.typography.labelSmall, color = AtomTheme.colors.textTertiary, maxLines = 1,
+            )
+        }
     }
 }
 
