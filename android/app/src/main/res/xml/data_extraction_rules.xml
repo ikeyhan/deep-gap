@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- توکن‌های نشست و کش هرگز پشتیبان‌گیری یا منتقل نمی‌شوند؛ فقط تنظیمات ظاهری -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="datastore/session.preferences_pb" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="datastore/session.preferences_pb" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+    </device-transfer>
+</data-extraction-rules>

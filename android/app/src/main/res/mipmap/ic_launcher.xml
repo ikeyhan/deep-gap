@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- آیکون لانچر برای API 24–25 (بدون آیکون تطبیقی) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="48dp" android:height="48dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:pathData="M54,4 A50,50 0 1,1 54,104 A50,50 0 1,1 54,4 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear" android:startX="0" android:startY="108" android:endX="108" android:endY="0">
+                <item android:offset="0" android:color="#FF0E7A38" />
+                <item android:offset="1" android:color="#FF22B14C" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="60">
+        <path android:pathData="M54,27 A12,27 0 1,1 54,81 A12,27 0 1,1 54,27 Z" android:strokeColor="#FFFFFFFF" android:strokeWidth="3.6" android:fillColor="#00000000" />
+    </group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="-60">
+        <path android:pathData="M54,27 A12,27 0 1,1 54,81 A12,27 0 1,1 54,27 Z" android:strokeColor="#FFFFFFFF" android:strokeWidth="3.6" android:fillColor="#00000000" />
+    </group>
+    <path android:pathData="M54,27 A12,27 0 1,1 54,81 A12,27 0 1,1 54,27 Z" android:strokeColor="#FFFFFFFF" android:strokeWidth="3.6" android:fillColor="#00000000" />
+    <path android:pathData="M54,47.6 A6.4,6.4 0 1,1 54,60.4 A6.4,6.4 0 1,1 54,47.6 Z" android:fillColor="#FFFFFFFF" />
+</vector>

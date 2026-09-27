@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- رنگ‌های پایه برای پنجره و اسپلش (بقیهٔ رنگ‌ها در Compose: core/designsystem/theme/Color.kt) -->
+<resources>
+    <color name="brand_green">#149B3E</color>
+    <color name="window_bg">#F4F6F5</color>
+    <color name="splash_bg">#FFFFFF</color>
+</resources>

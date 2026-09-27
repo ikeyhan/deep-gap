@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- app_name از build.gradle (resValue) می‌آید تا نسخهٔ debug متمایز باشد -->
+    <string name="channel_orders">سفارش‌ها</string>
+    <string name="channel_orders_desc">وضعیت سفارش‌ها، ارسال و تحویل</string>
+    <string name="channel_support">پشتیبانی</string>
+    <string name="channel_support_desc">پاسخ پشتیبانی و دفاتر محلات</string>
+</resources>
