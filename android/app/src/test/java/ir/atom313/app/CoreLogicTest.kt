@@ -48,12 +48,12 @@ class ValidatorsTest {
 }
 
 class ImageUrlsTest {
-    private val base = "https://atom313.ir/"
+    private val base = "https://atomy313.ir/"
 
     @Test
     fun `relative paths become absolute`() {
-        assertEquals("https://atom313.ir/uploads/a.jpg", ImageUrls.resolve(base, "/uploads/a.jpg"))
-        assertEquals("https://atom313.ir/assets/img/p.jpg", ImageUrls.resolve(base, "assets/img/p.jpg"))
+        assertEquals("https://atomy313.ir/uploads/a.jpg", ImageUrls.resolve(base, "/uploads/a.jpg"))
+        assertEquals("https://atomy313.ir/assets/img/p.jpg", ImageUrls.resolve(base, "assets/img/p.jpg"))
     }
 
     @Test

@@ -18,3 +18,6 @@ android/.kotlin/
 keystore.properties
 
 .DS_Store
+
+# APK های ساخته‌شده برای نصب دستی
+dist/

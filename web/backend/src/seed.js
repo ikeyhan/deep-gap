@@ -100,7 +100,7 @@ function seed() {
   const setDef = db.prepare('INSERT OR IGNORE INTO settings (key,value) VALUES (?,?)');
   [
     ['site_name','اتم ۳۱۳'], ['site_title','اتم ۳۱۳ | بازارگاه دیجیتال'],
-    ['domain','atom313.ir'], ['contact_email','info@atom.ir'],
+    ['domain','atomy313.ir'], ['contact_email','info@atom.ir'],
     ['seller_fee','5'], ['min_order','50000'], ['maintenance','0'],
     ['registration','1'], ['online_payment','1'],
     ['contact_phone','۰۲۱-۹۱۰۰۰۰۰۰'], ['address','تهران، ایران'], ['shipping_cost','45000'], ['free_shipping_min','500000'],

@@ -5,7 +5,7 @@ import ir.atom313.app.domain.model.AppNotification
 import ir.atom313.app.domain.model.NotificationType
 
 /**
- * پیوندهای ورودی: اعلان‌های اپ (atom313://) و پیوندهای سایت (https://atom313.ir/...).
+ * پیوندهای ورودی: اعلان‌های اپ (atom313://) و پیوندهای سایت (https://atomy313.ir/...).
  * خروجی یک مسیر ناوبری داخلی است تا کاربر مستقیم به همان صفحه برسد.
  */
 object DeepLinks {

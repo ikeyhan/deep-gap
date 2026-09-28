@@ -37,8 +37,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" />
-                <data android:host="atom313.ir" />
-                <data android:host="www.atom313.ir" />
+                <data android:host="atomy313.ir" />
+                <data android:host="www.atomy313.ir" />
                 <data android:pathPrefix="/product.html" />
                 <data android:pathPrefix="/product" />
                 <data android:pathPrefix="/track.html" />
